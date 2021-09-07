@@ -28,7 +28,7 @@ def db_connect():
     except Exception as e:
         print("(-) Error in Connecting to the DB")
         print(e)
-        return None, e
+        return None, str(e)
     else:
         return mydb, mydb
 
