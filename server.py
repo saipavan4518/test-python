@@ -28,9 +28,9 @@ def db_connect():
     except Exception as e:
         print("(-) Error in Connecting to the DB")
         print(e)
-        return None
+        return None, e
     else:
-        return mydb
+        return mydb, mydb
 
 
 @app.route("/", methods=["GET"])
@@ -43,10 +43,13 @@ def main_route():
 def get():
 
     global main_messages
-    if db_connect() is not None:
-        db = db_connect()["messages"]
+    aa, bb = db_connect()
+
+
+    if aa is not None:
+        db = aa["messages"]
     else:
-        return {"message":"Servers are Down"}, 500
+        return {"message":"Servers are Down","error":bb}, 500
     try:
         all_messages = []
         for i in db.find():
@@ -64,10 +67,12 @@ def get():
 
 @app.route("/post", methods=["POST"])
 def post():
-    if db_connect() is not None:
-        db = db_connect()["messages"]
+    aa, bb = db_connect()
+
+    if aa is not None:
+        db = aa["messages"]
     else:
-        return {"message": "Servers are Down"}, 500
+        return {"message": "Servers are Down","error":bb}, 500
 
     json = request.get_json(force=True)
     print(json)
@@ -80,4 +85,4 @@ def post():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True)
